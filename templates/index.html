@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Assistant Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Light Mode Colors */
+            --primary-light: #6e44ff;
+            --primary-light-light: #b892ff;
+            --secondary-light: #00c9b7;
+            --accent-light: #ff5e5b;
+            --dark-light: #0f172a;
+            --light-light: #f8fafc;
+            --text-light: #1e293b;
+            --text-secondary-light: #64748b;
+            --bg-light: #f1f5f9;
+            --card-light: #ffffff;
+            --card-border-light: #e2e8f0;
+            
+            /* Dark Mode Colors */
+            --primary-dark: #7d5fff;
+            --primary-light-dark: #a78bfa;
+            --secondary-dark: #00f5d4;
+            --accent-dark: #ff7b7b;
+            --dark-dark: #0f172a;
+            --light-dark: #f8fafc;
+            --text-dark: #f1f5f9;
+            --text-secondary-dark: #94a3b8;
+            --bg-dark: #0f172a;
+            --card-dark: rgba(30, 41, 59, 0.8);
+            --card-border-dark: rgba(255, 255, 255, 0.1);
+            
+            /* Default to dark mode */
+            --primary: var(--primary-dark);
+            --primary-light: var(--primary-light-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --dark: var(--dark-dark);
+            --light: var(--light-dark);
+            --text: var(--text-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --bg: var(--bg-dark);
+            --card: var(--card-dark);
+            --card-border: var(--card-border-dark);
+            --glass: rgba(30, 41, 59, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --font-size-base: 1rem;
+            --font-size-lg: 1.25rem;
+            --font-size-xl: 1.5rem;
+            --font-size-2xl: 2rem;
+            --font-size-3xl: 2.5rem;
+            --border-radius: 12px;
+            --spacing: 1rem;
+        }
+
+        /* Light mode */
+        [data-theme="light"] {
+            --primary: var(--primary-light);
+            --primary-light: var(--primary-light-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --dark: var(--dark-light);
+            --light: var(--light-light);
+            --text: var(--text-light);
+            --text-secondary: var(--text-secondary-light);
+            --bg: var(--bg-light);
+            --card: var(--card-light);
+            --card-border: var(--card-border-light);
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', 'Kanit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Dynamic background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50vh;
+            left: -50vw;
+            width: 200vw;
+            height: 200vh;
+            background: radial-gradient(circle at 30% 30%, rgba(110, 68, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(0, 245, 212, 0.15) 0%, transparent 50%);
+            z-index: -2;
+            animation: float 20s infinite alternate ease-in-out;
+            opacity: 0.5;
+        }
+
+        [data-theme="light"] body::before {
+            opacity: 0.2;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-5vw, 5vh) rotate(5deg); }
+            100% { transform: translate(5vw, -5vh) rotate(-5deg); }
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+            backdrop-filter: blur(20px);
+        }
+
+        /* Glass Sidebar */
+        .sidebar {
+            background: var(--glass);
+            border-right: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            padding: 2rem 1.5rem;
+            z-index: 10;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(110, 68, 255, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            padding-left: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(110, 68, 255, 0.1) 0%, transparent 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            transform: translateX(8px);
+            color: var(--text);
+        }
+
+        .nav-item:hover::before {
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 4px 20px rgba(110, 68, 255, 0.3);
+            color: white;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            min-width: 28px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title h1 {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            max-width: 600px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(110, 68, 255, 0.4);
+            transition: var(--transition);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+            margin-left: 1rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            box-shadow: 0 0 10px rgba(110, 68, 255, 0.3);
+        }
+
+        .toggle-ball {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            position: absolute;
+            left: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        [data-theme="light"] .toggle-ball {
+            transform: translateX(30px);
+        }
+
+        .toggle-icon {
+            font-size: 0.9rem;
+            z-index: 1;
+            color: var(--text-secondary);
+        }
+
+        .toggle-icon.sun {
+            margin-right: auto;
+        }
+
+        .toggle-icon.moon {
+            margin-left: auto;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .panel-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .panel-title i {
+            color: var(--primary);
+        }
+
+        .panel-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            padding: 1.75rem 0;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item:hover {
+            transform: translateX(10px);
+        }
+
+        .task-info h4 {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .task-info p {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+        }
+
+        .task-date {
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .task-date i {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.85rem 1.75rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: var(--font-size-base);
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--dark);
+            box-shadow: 0 4px 15px rgba(110, 68, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(110, 68, 255, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .btn-outline:hover {
+            background: rgba(110, 68, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(110, 68, 255, 0.2);
+        }
+
+        /* Card styles for Trello and Calendar */
+        .card {
+            background: var(--card);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card.trello-card {
+            border-left-color: var(--primary);
+        }
+
+        .card.event-card {
+            border-left-color: var(--secondary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-icon {
+            color: var(--primary);
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            background: rgba(110, 68, 255, 0.1);
+            color: var(--primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .meta-item i {
+            font-size: 0.9rem;
+        }
+
+        .due-date {
+            background: rgba(255, 94, 91, 0.15);
+            color: var(--accent);
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 2rem 0 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .list-title {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .list-count {
+            background: rgba(110, 68, 255, 0.1);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .error {
+            background: rgba(255, 94, 91, 0.15);
+            color: var(--accent);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-left: 4px solid var(--accent);
+            font-size: var(--font-size-base);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .panel:nth-child(1) { animation-delay: 0.2s; }
+        .panel:nth-child(2) { animation-delay: 0.3s; }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(110, 68, 255, 0.3);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .panel {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 2rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2rem;
+            }
+            
+            .user-profile {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --font-size-base: 1.1rem;
+                --font-size-lg: 1.4rem;
+                --font-size-xl: 1.7rem;
+                --font-size-2xl: 2.2rem;
+                --font-size-3xl: 2.8rem;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .card-meta {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .card-actions {
+                justify-content: flex-start;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div id="particles"></div>
+    
+    <div class="dashboard">
+        <!-- Glass Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chart-network"></i>
+                </div>
+                <div class="logo-text">NOVA</div>
+            </div>
+            
+            <div class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item">
+                <i class="fab fa-trello"></i>
+                <span>Trello</span>
+            </div>
+            <div class="nav-item">
+                <i class="far fa-calendar-alt"></i>
+                <span>Calendar</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="page-title">
+                    <h1>Corporate Assistant Dashboard</h1>
+                    <p>ศูนย์รวมงานและกิจกรรมของบริษัท</p>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-sun toggle-icon sun"></i>
+                        <i class="fas fa-moon toggle-icon moon"></i>
+                        <div class="toggle-ball"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- ส่วนของ Trello -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title"><i class="fab fa-trello"></i> {{ trello_data.board_name }}</div>
+                            <div class="panel-subtitle">{{ trello_data.lists|length }} Lists</div>
+                        </div>
+                    </div>
+                    
+                    {% if trello_data.get('error') %}
+                        <div class="error">
+                            <i class="fas fa-exclamation-circle"></i> 
+                            <span>{{ trello_data.error }}</span>
+                        </div>
+                    {% else %}
+                        {% for list in trello_data.lists %}
+                            <div class="list-header">
+                                <div class="list-title">
+                                    <i class="fas fa-list-ul"></i>
+                                    <span>{{ list.name }}</span>
+                                </div>
+                                <span class="list-count">{{ list.cards|length }} cards</span>
+                            </div>
+                            
+                            {% for card in list.cards %}
+                                <div class="card trello-card">
+                                    <div class="card-header">
+                                        <h3><i class="fas fa-sticky-note card-icon"></i> {{ card.name }}</h3>
+                                    </div>
+                                    
+                                    {% if card.desc %}
+                                        <div class="card-content">{{ card.desc }}</div>
+                                    {% endif %}
+                                    
+                                    <div class="card-meta">
+                                        {% if card.due %}
+                                            <div class="meta-item due-date">
+                                                <i class="far fa-clock"></i>
+                                                <span>{{ card.due|format_datetime }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="card-actions">
+                                        <a href="{{ card.url }}" target="_blank" class="btn btn-primary">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            <span>Open in Trello</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <!-- ส่วนของ Google Calendar -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title"><i class="far fa-calendar-alt"></i> ปฏิทินกิจกรรม</div>
+                            <div class="panel-subtitle">{{ calendar_events|length }} Events</div>
+                        </div>
+                    </div>
+                    
+                    {% if calendar_events is mapping and calendar_events.get('error') %}
+                        <div class="error">
+                            <i class="fas fa-exclamation-circle"></i> 
+                            <span>{{ calendar_events.error }}</span>
+                        </div>
+                    {% else %}
+                        {% for event in calendar_events %}
+                            <div class="card event-card">
+                                <div class="card-header">
+                                    <h3><i class="fas fa-calendar-check card-icon"></i> {{ event.summary }}</h3>
+                                </div>
+                                
+                                <div class="card-meta">
+                                    <div class="meta-item">
+                                        <i class="far fa-clock"></i>
+                                        <span>เริ่ม: {{ event.start|format_datetime }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>สิ้นสุด: {{ event.end|format_datetime }}</span>
+                                    </div>
+                                    {% if event.location %}
+                                        <div class="meta-item">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>{{ event.location }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if event.description %}
+                                    <div class="card-content">{{ event.description }}</div>
+                                {% endif %}
+                                
+                                <div class="card-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-user"></i>
+                                        <span>จัดโดย: {{ event.organizer }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // Check for saved theme preference or use system preference
+        const currentTheme = localStorage.getItem('theme') || 
+                            (prefersDarkScheme.matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+        
+        // Floating particles animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random properties
+                const size = Math.random() * 15 + 5;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 15 + 10;
+                const opacity = Math.random() * 0.4 + 0.1;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.opacity = opacity;
+                particle.style.animation = `float ${duration}s infinite ${delay}s alternate ease-in-out`;
+                
+                particlesContainer.appendChild(particle);
+            }
+            
+            // Animation trigger on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.panel').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
