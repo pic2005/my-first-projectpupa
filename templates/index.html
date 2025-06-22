@@ -123,105 +123,67 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 300px 1fr;
             min-height: 100vh;
             backdrop-filter: blur(20px);
         }
 
-        /* Glass Sidebar */
-        .sidebar {
-            background: var(--glass);
-            border-right: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            padding: 2rem 1.5rem;
-            z-index: 10;
-            position: relative;
-            overflow: hidden;
-            transition: background-color 0.5s ease, border-color 0.5s ease;
-        }
-
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 30%, rgba(110, 68, 255, 0.1) 0%, transparent 70%);
-            z-index: -1;
-        }
-
-        .logo {
+        /* Line Tab */
+        .line-tab {
+            background: linear-gradient(135deg, #00B900 0%, #00E500 100%);
+            padding: 1rem 2rem;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 3rem;
-            padding-left: 0.5rem;
-        }
-
-        .logo-icon {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .logo-text {
-            font-size: 1.75rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.25rem;
+            box-shadow: 0 4px 20px rgba(0, 185, 0, 0.3);
             border-radius: var(--border-radius);
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            font-size: var(--font-size-lg);
-            color: var(--text-secondary);
+            margin: 2rem 0;
         }
 
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(110, 68, 255, 0.1) 0%, transparent 100%);
-            z-index: -1;
-            opacity: 0;
-            transition: var(--transition);
+        .line-tab-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
 
-        .nav-item:hover {
-            transform: translateX(8px);
-            color: var(--text);
-        }
-
-        .nav-item:hover::before {
-            opacity: 1;
-        }
-
-        .nav-item.active {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            box-shadow: 0 4px 20px rgba(110, 68, 255, 0.3);
+        .line-tab-icon {
+            font-size: 2rem;
             color: white;
         }
 
-        .nav-item i {
-            font-size: 1.3rem;
-            min-width: 28px;
+        .line-tab-title {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: white;
+        }
+
+        .line-tab-id {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .line-tab-button {
+            background: white;
+            color: #00B900;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+        }
+
+        .line-tab-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Main Content */
@@ -234,7 +196,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
         }
 
         .page-title h1 {
@@ -478,6 +440,10 @@
             border-left-color: var(--secondary);
         }
 
+        .card.line-card {
+            border-left-color: #00B900;
+        }
+
         .card-header {
             display: flex;
             align-items: flex-start;
@@ -614,14 +580,6 @@
         }
 
         @media (max-width: 992px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
             .main-content {
                 padding: 2rem;
             }
@@ -635,6 +593,18 @@
             .user-profile {
                 width: 100%;
                 justify-content: space-between;
+            }
+
+            .line-tab {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .line-tab-content {
+                flex-direction: column;
+                gap: 0.5rem;
             }
         }
 
@@ -683,33 +653,6 @@
     <div id="particles"></div>
     
     <div class="dashboard">
-        <!-- Glass Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-chart-network"></i>
-                </div>
-                <div class="logo-text">NOVA</div>
-            </div>
-            
-            <div class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </div>
-            <div class="nav-item">
-                <i class="fab fa-trello"></i>
-                <span>Trello</span>
-            </div>
-            <div class="nav-item">
-                <i class="far fa-calendar-alt"></i>
-                <span>Calendar</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </div>
-        </div>
-        
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
@@ -727,6 +670,22 @@
                 </div>
             </div>
             
+            <!-- Line Tab ที่ย้ายตำแหน่งมาไว้ที่นี่ -->
+            <div class="line-tab">
+                <div class="line-tab-content">
+                    <i class="fab fa-line line-tab-icon"></i>
+                    <div class="line-tab-title">Corporate Assistant Bot</div>
+                    <div class="line-tab-id">
+                        <i class="fas fa-at"></i>
+                        <span>@corporate-assistant</span>
+                    </div>
+                </div>
+                <a href="https://line.me/R/ti/p/@corporate-assistant" target="_blank" class="line-tab-button">
+                    <i class="fab fa-line"></i>
+                    <span>Add Friend</span>
+                </a>
+            </div>
+            
             <!-- Content Grid -->
             <div class="content-grid">
                 <!-- ส่วนของ Trello -->
@@ -736,6 +695,10 @@
                             <div class="panel-title"><i class="fab fa-trello"></i> {{ trello_data.board_name }}</div>
                             <div class="panel-subtitle">{{ trello_data.lists|length }} Lists</div>
                         </div>
+                        <a href="https://trello.com" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>Open Trello</span>
+                        </a>
                     </div>
                     
                     {% if trello_data.get('error') %}
@@ -788,9 +751,13 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div>
-                            <div class="panel-title"><i class="far fa-calendar-alt"></i> ปฏิทินกิจกรรม</div>
+                            <div class="panel-title"><i class="far fa-calendar-alt"></i> ปฏิทินบริษัท</div>
                             <div class="panel-subtitle">{{ calendar_events|length }} Events</div>
                         </div>
+                        <a href="https://calendar.google.com/calendar/u/0/r?cid=4c18333cad0a70d6a296bc7ce3091dbc30af13c47f616fb38563b4bb7ce1430c@group.calendar.google.com" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>Open Company Calendar</span>
+                        </a>
                     </div>
                     
                     {% if calendar_events is mapping and calendar_events.get('error') %}
@@ -814,7 +781,7 @@
                                         <i class="fas fa-clock"></i>
                                         <span>สิ้นสุด: {{ event.end|format_datetime }}</span>
                                     </div>
-                                    {% if event.location %}
+                                    {% if event.location and event.location != "No location specified" %}
                                         <div class="meta-item">
                                             <i class="fas fa-map-marker-alt"></i>
                                             <span>{{ event.location }}</span>
@@ -826,11 +793,30 @@
                                     <div class="card-content">{{ event.description }}</div>
                                 {% endif %}
                                 
-                                <div class="card-meta">
-                                    <div class="meta-item">
-                                        <i class="fas fa-user"></i>
-                                        <span>จัดโดย: {{ event.organizer }}</span>
+                                {% if event.organizer and event.organizer.email %}
+                                    <div class="card-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-user"></i>
+                                            <span>จัดโดย: {{ event.organizer.email }}</span>
+                                        </div>
                                     </div>
+                                {% endif %}
+                                
+                                <div class="card-actions">
+                                    {% if event.start.dateTime %}
+                                        {# สำหรับ event ที่มีเวลาเฉพาะ #}
+                                        {% set start_time = event.start.dateTime|replace('-','')|replace(':','')|replace('+','')|slice(0, 15) %}
+                                        {% set end_time = event.end.dateTime|replace('-','')|replace(':','')|replace('+','')|slice(0, 15) %}
+                                        <a href="{{ event.htmlLink }}&dates={{ start_time }}/{{ end_time }}" target="_blank" class="btn btn-primary">
+                                    {% else %}
+                                        {# สำหรับ event ทั้งวัน #}
+                                        {% set start_date = event.start.date|replace('-','') %}
+                                        {% set end_date = event.end.date|replace('-','') %}
+                                        <a href="{{ event.htmlLink }}&dates={{ start_date }}/{{ end_date }}" target="_blank" class="btn btn-primary">
+                                    {% endif %}
+                                            <i class="fas fa-external-link-alt"></i>
+                                            <span>View Event</span>
+                                        </a>
                                 </div>
                             </div>
                         {% endfor %}
